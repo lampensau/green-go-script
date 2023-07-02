@@ -1,0 +1,10 @@
+// Created by Henk-jan Blok
+for i = 1 to 32
+    event channel.level[i]
+        if event.value <= -39
+            channel.listen[event.index] = channel.listen.off
+        else
+            channel.listen[event.index] = channel.listen.on
+        end
+    end
+end

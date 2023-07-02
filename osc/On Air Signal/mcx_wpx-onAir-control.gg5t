@@ -1,0 +1,215 @@
+// Location of the "Studio 1" button. The number below defindes the button or display section. 
+define onAirButtonStudio1 4
+// Description for the "Studio 1" button
+var descriptionButtonStudio1 = "On Air 1"
+// Color of the "Studio 1" button
+var colorButtonStudio1 = ui.color.red
+// Location of the "Studio 2" button. The number below defindes the button or display section.
+define onAirButtonStudio2 6
+// Description for the "Studio 2" button
+var descriptionButtonStudio2 = "On Air 2"
+// Color of the "Studio 2" button
+var colorButtonStudio2 = ui.color.green
+
+// OSC port the device uses for OSC communications
+define portOSC 17001
+// Target IP OSC packets are sent to
+var targetOSC = "10.0.10.255"
+// Paths for studio 1 and studio 2
+var pathStudio1 = "/studio/1/onair"
+var pathStudio2 = "/studio/2/onair"
+
+// Variable to define current button state. Set to 'disabled' by default.
+var enabledStudio1 = 0
+var enabledStudio2 = 0
+
+// Function to draw disabled 'On Air' button.
+function buttonOffAir(channel,message,color)
+    // Clear the existing UI
+    ui.clear()
+    // Draw a new framed button
+    ui.draw.button(message,color,0)
+    // Change button status color to blue (inactive)
+    ui.button[channel] = ui.color.blue
+end
+
+// Function to draw enabled 'On Air' button.
+function buttonOnAir(channel,message,color)
+    // Clear the existing UI
+    ui.clear()
+    // Draw a new solid button
+    ui.draw.button(message,color,1)
+    // Change button status color to the button color (active)
+    ui.button[channel] = color
+end
+
+// Function to send OSC packet. Passing keys 'ip', 'path', and 'color' to modify target
+function sendOscAction(ip,path,color)
+    osc.destination(ip)
+    osc.send(path, color)
+end
+
+// Function to send communication via 'script to script' communication to other Green-GO devices
+function sendScriptAction(index,color)
+    control.destination(index)
+    control.write(1,color)
+end
+
+// Function to toggle the 'On Air' button between enabled and disabled. Passing key 'channel' to modify target
+function toggle(studio,path)
+    // Checking the 'studio' function argument for 'onAirButtonStudio1'
+    if studio == onAirButtonStudio1
+        // Executing if variable 'enabledStudio1' is set to '1'
+        if enabledStudio1 == 1
+            // Set global variable 'enabledStudio1' to '0'
+            enabledStudio1 = 0
+            // Calling function 'sendOscAction' to signal the current signal via OSC to 'targetOSC'. Uncomment line below to enable
+            //sendOscAction(targetOSC,path,ui.color.black) /* Uncomment to enable sending OSC to control non Green-GO devices */
+            // Calling function 'sendScriptAction' signal to other Green-GO devices
+            sendScriptAction(98,ui.color.black)
+        else
+            // Set global variable 'enabledStudio1' to '0'
+            enabledStudio1 = 1
+            // Calling function 'sendOscAction' to signal the current signal via OSC to 'targetOSC'. Uncomment line below to enable
+            //sendOscAction(targetOSC,path,colorButtonStudio1) /* Uncomment to enable sending OSC to control non Green-GO devices */
+            // Calling function 'sendScriptAction' signal to other Green-GO devices
+            sendScriptAction(98,colorButtonStudio1)
+        end
+    end
+    // Checking the 'studio' function argument for 'onAirButtonStudio2'
+    if studio == onAirButtonStudio2
+        // Executing if variable 'enabledStudio2' is set to '1'
+        if enabledStudio2 == 1
+            // Set global variable 'enabledStudio2' to '0'
+            enabledStudio2 = 0
+            // Calling function 'sendOscAction' to signal the current signal via OSC to 'targetOSC'. Uncomment line below to enable
+            //sendOscAction(targetOSC,path,ui.color.black) /* Uncomment to enable sending OSC to control non Green-GO devices */
+            // Calling function 'sendScriptAction' signal to other Green-GO devices
+            sendScriptAction(99,ui.color.black)
+        else
+            // Set global variable 'enabledStudio2' to '1'
+            enabledStudio2 = 1
+            // Calling function 'sendOscAction' to signal the current signal via OSC to 'targetOSC'. Uncomment line below to enable
+            //sendOscAction(targetOSC,path,colorButtonStudio2) /* Uncomment to enable sending OSC to control non Green-GO devices */
+            // Calling function 'sendScriptAction' signal to other Green-GO devices
+            sendScriptAction(99,colorButtonStudio2)
+        end
+    end
+end
+
+// Open UDP port and start listening for packets
+osc.open(portOSC)
+
+// Event executing when receiving OSC packet for 'pathOSC'
+event osc.receive[pathStudio1]
+    // Execute if OSC packet is '0' (integer)
+    if osc.read(1) == ui.color.black
+        // Set global variable 'enabledStudi12' to '0'
+        enabledStudio1 = 0
+        // Calling function 'sendScriptAction' signal to other Green-GO devices
+        sendScriptAction(98,ui.color.black)
+    else
+        // Set color to first payload (integer) and use it as 'colorButtonStudio1'
+        colorButtonStudio1 = osc.read(1)
+        // Set global variable 'enabledStudio1' to '1'
+        enabledStudio1 = 1
+        // Calling function 'sendScriptAction' signal to other Green-GO devices
+        sendScriptAction(98,colorButtonStudio1)
+    end
+end
+
+// Event executing when receiving OSC packet for 'pathOSC'
+event osc.receive[pathStudio2]
+    // Execute if OSC packet is '0' (integer)
+    if osc.read(1) == ui.color.black
+        // Set global variable 'enabledStudi12' to '0'
+        enabledStudio2 = 0
+        // Calling function 'sendScriptAction' signal to other Green-GO devices
+        sendScriptAction(99,ui.color.black)
+    else
+        // Set color to first payload (integer) and use it as 'colorButtonStudio2'
+        colorButtonStudio2 = osc.read(1)
+        // Set global variable 'enabledStudio2' to '1'
+        enabledStudio2 = 1
+        // Calling function 'sendScriptAction' signal to other Green-GO devices
+        sendScriptAction(99,colorButtonStudio1)
+    end
+end
+
+// Event executing when receiving 'script to script' communication on index '98'
+event control.receive[98]
+    if control.read(1) == ui.color.black
+        // Set global variable 'enabledStudio1' to '0'
+        enabledStudio1 = 0
+    else
+        // Set color to first payload (integer) and use it as 'colorButtonStudio1'
+        colorButtonStudio1 = control.read(1)
+        // Set global variable 'enabledStudio1' to '1'
+        enabledStudio1 = 1
+    end
+end
+
+// Event executing when receiving 'script to script' communication on index '99'
+event control.receive[99]
+    if control.read(1) == ui.color.black
+        // Set global variable 'enabledStudio2' to '0'
+        enabledStudio2 = 0
+    else
+        // Set color to first payload (integer) and use it as 'colorButtonStudio2'
+        colorButtonStudio2 = control.read(1)
+        // Set global variable 'enabledStudio2' to '1'
+        enabledStudio2 = 1
+    end
+end
+
+// Execute on button interaction and use the variable 'onAirButtonStudio1' defined above
+event ui.button[onAirButtonStudio1]
+    // Only execute when button state is 'ui.button.pressed'
+    if ui.button[onAirButtonStudio1] == ui.button.pressed
+        // Calling the toggle function
+        toggle(onAirButtonStudio1,pathStudio1)
+    end
+end
+
+// Execute on button interaction and use the variable 'onAirButtonStudio2' defined above
+event ui.button[onAirButtonStudio2]
+    // Only execute when button state is 'ui.button.pressed'
+    if ui.button[onAirButtonStudio2] == ui.button.pressed
+        // Calling the toggle function
+        toggle(onAirButtonStudio2,pathStudio2)
+    end
+end
+
+// Execute on touchscreen interaction and use the variable 'onAirButtonStudio1' defined above
+event ui.touch[onAirButtonStudio1]
+    // Only execute when the touchscreen is pressed
+    if ui.event == ui.event.press
+        // Calling the toggle function
+        toggle(onAirButtonStudio1,pathStudio1)
+    end
+end
+
+// Execute on touchscreen interaction and use the variable 'onAirButtonStudio2' defined above
+event ui.touch[onAirButtonStudio2]
+    // Only execute when the touchscreen is pressed
+    if ui.event == ui.event.press
+        // Calling the toggle function
+        toggle(onAirButtonStudio2,pathStudio2)
+    end
+end
+
+event ui.draw[onAirButtonStudio1]
+    if enabledStudio1 == 0
+        buttonOffAir(onAirButtonStudio1,descriptionButtonStudio1,colorButtonStudio1)
+    else
+        buttonOnAir(onAirButtonStudio1,descriptionButtonStudio1,colorButtonStudio1)
+    end
+end
+
+event ui.draw[onAirButtonStudio2]
+    if enabledStudio2 == 0
+        buttonOffAir(onAirButtonStudio2,descriptionButtonStudio2,colorButtonStudio2)
+    else
+        buttonOnAir(onAirButtonStudio2,descriptionButtonStudio2,colorButtonStudio2)
+    end
+end

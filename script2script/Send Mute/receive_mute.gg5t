@@ -1,0 +1,19 @@
+// By Henk-Jan Blok
+define control_ID 1
+var ch_ID = 0
+var listen_state = 0
+
+event control.receive[control_ID]
+    ch_ID = control.read(1)
+    local state = control.read(2)
+    if listen_state != state
+        listen_state = state
+    end
+    channel.isten[ch_ID] = listen_state
+end
+
+event channel.listen[ch_ID]
+    control.destination(control_ID)
+    control.write(1, ch_ID)
+    control.write(2, listen_state)
+end

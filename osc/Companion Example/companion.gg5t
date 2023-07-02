@@ -1,0 +1,298 @@
+// IP address of the Companion instance
+var companionIP = "169.254.20.30"
+// Ports for sending and receiving OSC messages
+define companionPortSnd = 12321
+define companionPortRcv = 8000
+
+// Send talk status to Bitfocus Companion
+event channel.talk[1]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.talk[1] != channel.talk.on
+        osc.send("/press/bank/1/2", 0)
+        osc.send("/press/bank/1/2", 0)
+    else
+        osc.send("/press/bank/1/2", 1)
+    end
+end
+event channel.talk[2]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.talk[2] != channel.talk.on
+        osc.send("/press/bank/1/3", 0)
+        osc.send("/press/bank/1/3", 0)
+    else
+        osc.send("/press/bank/1/3", 1)
+    end
+end
+event channel.talk[3]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.talk[3] != channel.talk.on
+        osc.send("/press/bank/1/4", 0)
+        osc.send("/press/bank/1/4", 0)
+    else
+        osc.send("/press/bank/1/4", 1)
+    end
+end
+event channel.talk[4]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.talk[4] != channel.talk.on
+        osc.send("/press/bank/1/5", 0)
+        osc.send("/press/bank/1/5", 0)
+    else
+        osc.send("/press/bank/1/5", 1)
+    end
+end
+
+// Send icomming vox status to Bitfocus Companion
+event ui.draw[1]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.input.status[1] <= channel.input.status.members
+        osc.send("/style/bgcolor/1/10", 0, 0, 0)
+        osc.send("/style/color/1/10", 255, 255, 255)
+    else
+        osc.send("/style/bgcolor/1/10", 255, 199, 0)
+        osc.send("/style/color/1/10", 0, 0, 0)
+    end
+    if channel.input.status[2] <= channel.input.status.members
+        osc.send("/style/bgcolor/1/11", 0, 0, 0)
+        osc.send("/style/color/1/11", 255, 255, 255)
+    else
+        osc.send("/style/bgcolor/1/11", 255, 199, 0)
+        osc.send("/style/color/1/11", 0, 0, 0)
+    end
+    if channel.input.status[3] <= channel.input.status.members
+        osc.send("/style/bgcolor/1/12", 0, 0, 0)
+        osc.send("/style/color/1/12", 255, 255, 255)
+    else
+        osc.send("/style/bgcolor/1/12", 255, 199, 0)
+        osc.send("/style/color/1/12", 0, 0, 0)
+    end
+    if channel.input.status[4] <= channel.input.status.members
+        osc.send("/style/bgcolor/1/13", 0, 0, 0)
+        osc.send("/style/color/1/13", 255, 255, 255)
+    else
+        osc.send("/style/bgcolor/1/13", 255, 199, 0)
+        osc.send("/style/color/1/13", 0, 0, 0)
+    end
+end
+
+// Send listen status to Bitfocus Companion
+event channel.listen[1]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.listen[1] == channel.listen.off
+        osc.send("/press/bank/1/10", 1)
+    else
+        osc.send("/press/bank/1/10", 0)
+        osc.send("/press/bank/1/10", 0)
+    end
+end
+event channel.listen[2]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.listen[2] == channel.listen.off
+        osc.send("/press/bank/1/11", 1)
+    else
+        osc.send("/press/bank/1/11", 0)
+        osc.send("/press/bank/1/11", 0)
+    end
+end
+event channel.listen[3]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.listen[3] == channel.listen.off
+        osc.send("/press/bank/1/12", 1)
+    else
+        osc.send("/press/bank/1/12", 0)
+        osc.send("/press/bank/1/12", 0)
+    end
+end
+event channel.listen[4]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.listen[4] == channel.listen.off
+        osc.send("/press/bank/1/13", 1)
+    else
+        osc.send("/press/bank/1/13", 0)
+        osc.send("/press/bank/1/13", 0)
+    end
+end
+
+// Send received call status to Bitfocus Companion
+event channel.input.call[1]
+    if channel.input.call[1] >= channel.input.call.active
+        osc.send("/press/bank/1/18", 1)
+    else
+        osc.send("/press/bank/1/18", 0)
+        osc.send("/press/bank/1/18", 0)
+    end
+end
+event channel.input.call[2]
+    if channel.input.call[2] >= channel.input.call.active
+        osc.send("/press/bank/1/19", 1)
+    else
+        osc.send("/press/bank/1/19", 0)
+        osc.send("/press/bank/1/19", 0)
+    end
+end
+event channel.input.call[3]
+    if channel.input.call[3] >= channel.input.call.active
+        osc.send("/press/bank/1/20", 1)
+    else
+        osc.send("/press/bank/1/20", 0)
+        osc.send("/press/bank/1/20", 0)
+    end
+end
+event channel.input.call[4]
+    if channel.input.call[4] >= channel.input.call.active
+        osc.send("/press/bank/1/21", 1)
+    else
+        osc.send("/press/bank/1/21", 0)
+        osc.send("/press/bank/1/21", 0)
+    end
+end
+
+// Send local (outgoing) call status to Bitfocus Companion
+event channel.call[1]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.call[1] == channel.call.on
+        osc.send("/press/bank/1/18", 1)
+    end
+    if channel.call[1] == channel.call.off
+        osc.send("/press/bank/1/18", 0)
+        osc.send("/press/bank/1/18", 0)
+    end
+end
+event channel.call[2]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.call[2] == channel.call.on
+        osc.send("/press/bank/1/19", 1)
+    end
+    if channel.call[2] == channel.call.off
+        osc.send("/press/bank/1/19", 0)
+        osc.send("/press/bank/1/19", 0)
+    end
+end
+event channel.call[3]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.call[3] == channel.call.on
+        osc.send("/press/bank/1/20", 1)
+    end
+    if channel.call[3] == channel.call.off
+        osc.send("/press/bank/1/20", 0)
+        osc.send("/press/bank/1/20", 0)
+    end
+end
+event channel.call[4]
+    osc.destination(companionIP, companionPortSnd)
+    if channel.call[4] == channel.call.on
+        osc.send("/press/bank/1/21", 1)
+    end
+    if channel.call[4] == channel.call.off
+        osc.send("/press/bank/1/21", 0)
+        osc.send("/press/bank/1/21", 0)
+    end
+end
+
+osc.open(8000)
+
+// Receive talk status from Bitfocus Companion
+event osc.receive["/ggo/talk/ch1"]
+    if osc.read(1) == 1
+        channel.talk[1] = channel.talk.on
+    else
+        channel.talk[1] = channel.talk.off
+    end
+end
+event osc.receive["/ggo/talk/ch2"]
+    if osc.read(1) == 1
+        channel.talk[2] = channel.talk.on
+    else
+        channel.talk[2] = channel.talk.off
+    end
+end
+event osc.receive["/ggo/talk/ch3"]
+    if osc.read(1) == 1
+        channel.talk[3] = channel.talk.on
+    else
+        channel.talk[3] = channel.talk.off
+    end
+end
+event osc.receive["/ggo/talk/ch4"]
+    if osc.read(1) == 1
+        channel.talk[4] = channel.talk.on
+    else
+        channel.talk[4] = channel.talk.off
+    end
+end
+
+// Receive listen status from Bitfocus Companion
+event osc.receive["/ggo/listen/ch1"]
+    if osc.read(1) == 1
+        channel.listen[1] = channel.listen.on
+    else
+        channel.listen[1] = channel.listen.off
+    end
+end
+event osc.receive["/ggo/listen/ch2"]
+    if osc.read(1) == 1
+        channel.listen[2] = channel.listen.on
+    else
+        channel.listen[2] = channel.listen.off
+    end
+end
+event osc.receive["/ggo/listen/ch3"]
+    if osc.read(1) == 1
+        channel.listen[3] = channel.listen.on
+    else
+        channel.listen[3] = channel.listen.off
+    end
+end
+event osc.receive["/ggo/listen/ch4"]
+    if osc.read(1) == 1
+        channel.listen[4] = channel.listen.on
+    else
+        channel.listen[4] = channel.listen.off
+    end
+end
+
+// Receive call status from Bitfocus Companion
+event osc.receive["/ggo/call/ch1"]
+    if osc.read(1) == 0
+        channel.call[1] = channel.call.off
+    end
+    if osc.read(1) == 1
+        channel.call[1] = channel.call.on
+    end
+    if osc.read(1) == 2
+        channel.call[1] = channel.call.alert
+    end
+end
+event osc.receive["/ggo/call/ch2"]
+    if osc.read(1) == 0
+        channel.call[2] = channel.call.off
+    end
+    if osc.read(1) == 1
+        channel.call[2] = channel.call.on
+    end
+    if osc.read(1) == 2
+        channel.call[2] = channel.call.alert
+    end
+end
+event osc.receive["/ggo/call/ch3"]
+    if osc.read(1) == 0
+        channel.call[3] = channel.call.off
+    end
+    if osc.read(1) == 1
+        channel.call[3] = channel.call.on
+    end
+    if osc.read(1) == 2
+        channel.call[3] = channel.call.alert
+    end
+end
+event osc.receive["/ggo/call/ch4"]
+    if osc.read(1) == 0
+        channel.call[4] = channel.call.off
+    end
+    if osc.read(1) == 1
+        channel.call[4] = channel.call.on
+    end
+    if osc.read(1) == 2
+        channel.call[4] = channel.call.alert
+    end
+end

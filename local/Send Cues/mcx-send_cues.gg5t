@@ -1,0 +1,73 @@
+// Define a channel ID (1 - 32) as the start value for the channel loop
+define chRangeStart 13
+// Define a channel ID (1 - 32) as the stop value for the channel loop
+define chRangeStop 15
+// Define the page(s) the buttons should be located (all: 0, default page: 1, second page: 2)
+// Please note that we currently simply shift the chRangeStart and chRangeStop by +15
+// This accomodates the default UI assignments when viewing the second page
+define devicePage 0
+
+// Function to send the CUE attention signal
+function cueATT(ch)
+    if channel.cue[ch] == channel.cue.idle | channel.cue[ch] == channel.cue.off
+        channel.cue[ch] = channel.cue.att
+    end
+end
+
+// Function to send the CUE go signal
+function cueGO(ch)
+    if channel.cue[ch] == channel.cue.att
+        channel.cue[ch] = channel.cue.go
+    else 
+        channel.cue[ch] = channel.cue.off
+    end
+end
+
+// Function to override button and touchscreen functionality
+function cueActions()
+    // A for-loop to mount all buttons/touchscreens in range
+    for btn = chRangeStart to chRangeStop
+        // Mount the button events
+        event ui.button[btn]
+            // Initialize local variable stores
+            local chId = ui.event.index
+            local btnId = ui.event.index
+            local page = device.current.page
+            // Check page configuration
+            if devicePage == 0 | devicePage == 2
+                // Shift counter by +15 if second page is active
+                if page == device.page.2
+                    chId = ui.event.index + 15
+                end
+            end
+            // Call cue functions when button is pressed
+            if ui.button[btnId] == ui.button.pressed
+                cueGO(chId)
+                cueATT(chId)
+            end
+        end
+        // Mount the touchscreen events
+        event ui.touch[btn]
+            // Initialize local variable stores
+            local chId = ui.event.index
+            local page = device.current.page
+            // Check page configuration
+            if devicePage == 0 | devicePage == 2
+                // Shift counter by +15 if second page is active
+                if page == device.page.2
+                    chId = ui.event.index + 15
+                end
+            end
+            // Cancel or disable any active cue signal on the channel
+            channel.cue[chId] = channel.cue.off
+        end
+    end
+end
+
+// Mount the event for changing the device page
+event device.current.page
+    cueActions()
+end
+
+// Call the cueActions function to initialize
+cueActions()

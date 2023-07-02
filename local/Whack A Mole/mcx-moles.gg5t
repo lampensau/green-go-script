@@ -1,0 +1,332 @@
+// Created by Charles Phelps
+define count 600
+var counter = count
+var tic = 1
+var score1 = 0
+var score2 = 0
+var score3 = counter
+var score4 = 0
+var on = 0
+var a = 3
+var b = 2
+var x = 1
+var number = 1
+var channel = 0
+
+var loga = 0
+var logb = 0
+var logc = 0
+var logd = 0
+var loge = 0
+var logf = 0
+var logg = 0
+var logh = 0
+var logi = 0
+var logj = 0
+var logk = 0
+var logl = 0
+
+// "random" number generation
+function math()
+    number = number + a - b
+    a = a + 1
+    if number >= 12
+        number = x
+    end
+    if number < 0
+        number = x
+    end
+    if a > 11
+        a = 3
+    end
+
+    if number == loga
+        number = number + 1
+    end
+    if number == logb
+        number = number + 1
+    end
+    if number == logc
+        number = number + 1
+    end
+    if number == logd
+        number = number + 1
+    end
+    if number == loge
+        number = number + 1
+    end
+    if number == logf
+        number = number + 1
+    end
+    if number == logg
+        number = number + 1
+    end
+    if number == logh
+        number = number + 1
+    end
+    if number == logi
+        number = number + 1
+    end
+    if number == logj
+        number = number + 1
+    end
+    if number == logk
+        number = number + 1
+    end
+    if number == logl
+        number = number + 1
+    end
+end 
+
+// draw/update stats and mole in location
+function draw()
+    event ui.draw[13]
+        ui.clear()
+        ui.draw.button("Clear",ui.color.red,1)
+    end
+    event ui.draw[14]
+        ui.clear()
+        ui.draw.text.at(10,0,"Timer: ", score3)
+        ui.draw.text.at(10,25,"Selected: ", channel)
+        ui.draw.text.at(10,50,"Mole loc: ", number)
+    end
+    event ui.draw[15]
+        ui.clear()
+        ui.draw.text.at(10,0,"Highscore: ", score2)
+        ui.draw.text.at(10,25,"Score: ", score1)
+    end
+    event ui.draw[number]
+        ui.clear()
+        ui.draw.rectangle(60,20,15,15)
+        ui.draw.rectangle(95,20,15,15)
+        ui.draw.level(60,50)
+    end
+end
+
+// check which button is currently pressed
+function checker()
+    event ui.touch[1]
+        channel = ui.event ? 1 : 0
+    end
+    event ui.touch[2]
+        channel = ui.event ? 2 : 0
+    end
+    event ui.touch[3]
+        channel = ui.event ? 3 : 0
+    end
+    event ui.touch[4]
+        channel = ui.event ? 4 : 0
+    end
+    event ui.touch[5]
+        channel = ui.event ? 5 : 0
+    end
+    event ui.touch[6]
+        channel = ui.event ? 6 : 0
+    end
+    event ui.touch[7]
+        channel = ui.event ? 7 : 0
+    end
+    event ui.touch[8]
+        channel = ui.event ? 8 : 0
+    end
+    event ui.touch[9]
+        channel = ui.event ? 9 : 0
+    end
+    event ui.touch[10]
+        channel = ui.event ? 10 : 0
+    end
+    event ui.touch[11]
+        channel = ui.event ? 11 : 0
+    end
+    event ui.touch[12]
+        channel = ui.event ? 12 : 0
+    end
+end
+
+// clear button check
+function checkeroff()
+    cancel ui.touch[1]
+    cancel ui.touch[2]
+    cancel ui.touch[3]
+    cancel ui.touch[4]
+    cancel ui.touch[5]
+    cancel ui.touch[6]
+    cancel ui.touch[7]
+    cancel ui.touch[8]
+    cancel ui.touch[9]
+    cancel ui.touch[10]
+    cancel ui.touch[11]
+    cancel ui.touch[12]
+
+    cancel ui.draw[1]
+    cancel ui.draw[2]
+    cancel ui.draw[3]
+    cancel ui.draw[4]
+    cancel ui.draw[5]
+    cancel ui.draw[6]
+    cancel ui.draw[7]
+    cancel ui.draw[8]
+    cancel ui.draw[9]
+    cancel ui.draw[10]
+    cancel ui.draw[11]
+    cancel ui.draw[12]
+    cancel ui.draw[14]
+    cancel ui.draw[15]
+
+    loga = 0
+    logb = 0
+    logc = 0
+    logd = 0
+    loge = 0
+    logf = 0
+    logg = 0
+    logh = 0
+    logi = 0
+    logj = 0
+    logk = 0
+    logl = 0
+end
+
+function log()
+    if loga == 0
+        loga = number
+    else
+        if logb == 0
+            logb = number
+        else
+            if logc == 0
+                logc = number
+            else
+                if logd == 0
+                    logd = number
+                else
+                    if loge == 0
+                        loge = number
+                    else
+                        if logf == 0
+                            logf = number
+                        else
+                            if logg == 0
+                                logg = number
+                            else
+                                if logh == 0
+                                    logh = number
+                                else
+                                    if logi == 0
+                                        logi = number
+                                    else
+                                        if logj == 0
+                                            logj = number
+                                        else
+                                            if logk == 0
+                                                logk = number
+                                            else
+                                                if logl == 0
+                                                    logl = number
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    event ui.draw[number]
+        ui.clear()
+        ui.draw.button("POW!",ui.color.red,1)
+    end
+
+end
+
+function update()
+    timer[2] = 1000
+    event timer[2]
+        cancel ui.draw[16]
+        cancel ui.draw[17]
+        cancel ui.draw[18]
+    end
+    event ui.draw[16]
+        ui.clear()
+        ui.draw.button("NEW",ui.color.green,0)
+    end
+    event ui.draw[17]
+        ui.clear()
+        ui.draw.button("HIGH",ui.color.green,0)
+    end
+    event ui.draw[18]
+        ui.clear()
+        ui.draw.button("SCORE",ui.color.green,0)
+    end
+end
+
+// default device, update High score
+function start()
+    on = 0
+    checkeroff()
+    cancel ui.touch
+    if score1 > score2
+        score2 = score1
+        update()
+    end
+    cancel timer[1]
+    cancel ui.touch[number]
+    cancel ui.draw[number]
+    counter = count
+    timer[1] = tic
+    event ui.draw[13]
+        ui.clear()
+        ui.draw.button("MOLES!",ui.color.green,1)
+    end
+end
+
+// draw stats & mole, when mole selected clear and move
+function game()
+    on = 1
+    score1 = 0
+    score4 = 0
+    draw()
+    counter = count
+    event timer[1]
+        if counter
+            counter = counter - 1
+            score3 = (counter / 100)
+            timer[1] = tic
+            checker()
+            if channel == number
+                cancel ui.touch[number]
+                cancel ui.draw[number]
+                score1 = score1 + 1
+                score4 = score4 + 1
+                log()
+                math()
+                draw()
+            end
+            if score4 == 6
+                score4 = 0
+                checkeroff()
+                checker()
+                draw()
+            end
+        else
+        start()
+        end
+    end
+    timer[1] = tic
+end
+
+// setup start button
+start()
+event ui.touch[13] 
+    if ui.event == ui.event.press
+        if on == 0
+            game()
+        else
+            start()
+        end
+    end
+end

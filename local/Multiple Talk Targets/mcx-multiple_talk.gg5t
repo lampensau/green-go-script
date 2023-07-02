@@ -1,0 +1,69 @@
+// ----- Configuration for the multiple channels talk function
+// MCX/MCXD button page
+define multipleTalkBtnPage device.page.1
+// Button ID
+define multipleTalkBtn 7
+// Button Name
+var multipleTalkName = "ALL IFB"
+// Channel IDs to be enabled when function is active
+define multipleTalkCh_1 8
+define multipleTalkCh_2 9
+define multipleTalkCh_3 11
+define multipleTalkCh_4 12
+
+// ----- Function logic
+// Variable stores for various states
+var multipleTalkChState_1 = 0
+var multipleTalkChState_2 = 0
+var multipleTalkChState_3 = 0
+var multipleTalkChState_4 = 0
+var multipleTalkState = 0
+// Record changed channel states if multipleTalkState is inactive
+event channel.talk[multipleTalkCh_1]
+    multipleTalkChState_1 = multipleTalkState ? "" : channel.talk[multipleTalkCh_1]
+end
+event channel.talk[multipleTalkCh_2]
+    multipleTalkChState_2 = multipleTalkState ? "" : channel.talk[multipleTalkCh_2]
+end
+event channel.talk[multipleTalkCh_3]
+    multipleTalkChState_3 = multipleTalkState ? "" : channel.talk[multipleTalkCh_3]
+end
+event channel.talk[multipleTalkCh_4]
+    multipleTalkChState_4 = multipleTalkState ? "" : channel.talk[multipleTalkCh_4]
+end
+// Main logic for the function button
+function multipleTalk(btn,name)
+    // Check for the currently active button page
+    if device.current.page == multipleTalkBtnPage
+        // Switch multipleTalkState to active if pressed
+        event ui.touch[btn]
+            multipleTalkState = ui.event ? 1 : 0
+        end
+        event ui.button[btn]
+            multipleTalkState = ui.event ? 1 : 0
+        end
+        // Draw the button on screen and change the talk state, depending on multipleTalkState
+        event ui.draw[btn]
+            ui.clear(ui.color.black)
+            ui.draw.button(name,multipleTalkState ? ui.color.green : ui.color.white,multipleTalkState ? 1 : 0)
+            ui.button[btn] = multipleTalkState ? ui.color.green : ui.color.white
+            channel.talk[multipleTalkCh_1] = multipleTalkState ? channel.talk.on : multipleTalkChState_1
+            channel.talk[multipleTalkCh_2] = multipleTalkState ? channel.talk.on : multipleTalkChState_2
+            channel.talk[multipleTalkCh_3] = multipleTalkState ? channel.talk.on : multipleTalkChState_3
+            channel.talk[multipleTalkCh_4] = multipleTalkState ? channel.talk.on : multipleTalkChState_4
+        end
+    else
+        // Release all events
+        cancel ui.touch[btn]
+        cancel ui.button[btn]
+        cancel ui.draw[btn]
+    end
+end
+
+// ----- Execute functions
+// Execute on page change
+event device.current.page
+    multipleTalk(multipleTalkBtn,multipleTalkName)
+end
+// Execute on initial script load
+multipleTalk(multipleTalkBtn,multipleTalkName)

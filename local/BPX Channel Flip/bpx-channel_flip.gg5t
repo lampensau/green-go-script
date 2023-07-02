@@ -1,0 +1,76 @@
+// Initialize virtual pages
+var page = 0
+var page.size = 30
+// Store initial channel assignments
+var original1 = channel.assign[1]
+var original2 = channel.assign[2]
+var original3 = channel.assign[3]
+var original4 = channel.assign[4]
+// Function to recall the original channel assignments
+function first.page()
+    channel.assign[1] = original1
+    channel.assign[2] = original2
+    channel.assign[3] = original3
+    channel.assign[4] = original4
+end
+// Function to define the channel assignments for the last virutal page
+function last.page()
+    if page.size == 30
+        channel.assign[1] = channel.assign[31]
+        channel.assign[2] = channel.assign[32]
+        channel.assign[3] = -1
+        if device.bpx.ui.mode == device.bpx.ui.mode.3chan
+    	    event ui.draw
+                ui.window(49,0,50,30)
+                ui.clear()
+            end
+        end
+    else
+        channel.assign[1] = channel.assign[29]
+        channel.assign[2] = channel.assign[30]
+        channel.assign[3] = channel.assign[31]
+        channel.assign[4] = channel.assign[32]
+    end
+end
+// Mount event for left encoder
+event ui.encoder[ui.bpx.encoder.left]
+    // Check current UI mode
+    if device.bpx.ui.mode == device.bpx.ui.mode.4chan
+        page.size = 28
+    else
+        page.size = 30
+    end
+    // Change assignments depending on the direction of the encoder rotation
+    if ui.event.value < 0
+        page = page - (device.bpx.ui.mode + 2)
+        channel.assign[1] = channel.assign[page + 1]
+        channel.assign[2] = channel.assign[page + 2]
+        channel.assign[3] = channel.assign[page + 3]
+        channel.assign[4] = channel.assign[page + 4]
+    else
+        page = page + (device.bpx.ui.mode + 2)
+        channel.assign[1] = channel.assign[page + 1]
+        channel.assign[2] = channel.assign[page + 2]
+        channel.assign[3] = channel.assign[page + 3]
+        channel.assign[4] = channel.assign[page + 4] 
+    end
+    // Ensure we flip on boundries
+    if page < 0
+        last.page()
+        page = page.size
+    end
+    if page == 0
+        first.page()
+        page = 0
+    end
+    if page == page.size
+        last.page()
+    end
+    if page > page.size
+        first.page()
+        page = 0
+    end
+    if page != page.size
+        cancel ui.draw
+    end
+end

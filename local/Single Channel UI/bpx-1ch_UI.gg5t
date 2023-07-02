@@ -1,0 +1,232 @@
+// Define the channel ID that should be used for all button actions
+define singleChannel 1
+// Define state colors
+define colorDefault ui.color.blue
+define colorTalk ui.color.green
+define colorVox ui.color.yellow
+define colorCall ui.color.red
+define colorDisabled ui.color.darkgrey
+// Initialize variable for alert call color
+var colorCallAlert = 0
+// Initialize variable for muted vox input color
+var colorVoxMuted = 0
+// Variable used to store the channel's latched stated
+var latchedTalk = 0
+
+function oneChannelUi()
+    // Create a new window that overrides everything except the top 3px (channel color)
+    ui.window(0,3,96,61)
+    // Set background of the window
+    ui.clear()
+    // Defining font settings for channel name
+    ui.font = ui.font.large
+    ui.fontmode = ui.fontmode.hcenter
+    // Since fontmode is set to hcenter, we can ignore the x value (0)
+    ui.draw.text.at(0,12,"@", singleChannel)
+    // Cancel "ui.fontmode" to release hcenter
+    cancel ui.fontmode
+    // Adding the channel number
+    ui.font = 2
+    ui.color = ui.color.yellow
+    ui.draw.text.at(20,31,singleChannel)
+    // Adding channel member state ("x")
+    if channel.input.status[singleChannel] == channel.input.status.no.members
+        ui.color = ui.color.red
+        ui.draw.text.at(28,31,"x")
+    end
+    // Adding channel level indicator that respects listenmode
+    if channel.listen[singleChannel] == channel.listen.on | (channel.listenmode[singleChannel] == channel.listenmode.default & channel.talk[singleChannel] >= channel.talk.on)
+        ui.draw.level(36,35, channel.level[singleChannel], 1)
+    else
+        ui.draw.level(36,35, channel.level[singleChannel], 0)
+    end
+    // Add button function indicators, depending on user configuration
+    if channel.talkmode[singleChannel] != channel.talkmode.disabled
+        ui.color = colorTalk
+    else
+        ui.color = colorDisabled
+    end
+    // Left-hand function indicators
+    ui.draw.rectangle(0,0,4,26)
+    ui.draw.rectangle(0,32,4,26)
+    // Change function indicator color if callmode is enabled
+    if channel.callmode[singleChannel] != channel.callmode.disabled
+        ui.color = colorCall
+    end
+    // Right-hand function indicators
+    ui.draw.rectangle(92,0,4,26)
+    ui.draw.rectangle(92,32,4,26)
+end
+
+// Function for state colors
+function stateColors()
+    // Check for any state that should change the state color
+    if channel.input.status[singleChannel] >= channel.input.status.vox.auto | channel.talk[singleChannel] >= channel.talk.on | channel.input.call[singleChannel] >= channel.input.call.active | channel.call[singleChannel] >= channel.call.on
+        // VOX input
+        if channel.input.status[singleChannel] == channel.input.status.vox
+            ui.button[ui.bpx.1] = colorVox
+            ui.button[ui.bpx.2] = colorVox
+            ui.button[ui.bpx.3] = colorVox
+            ui.button[ui.bpx.4] = colorVox
+            if channel.listen[singleChannel] == channel.listen.off
+                ui.button[ui.bpx.1] = colorVoxMuted
+                ui.button[ui.bpx.2] = colorVoxMuted
+                ui.button[ui.bpx.3] = colorVoxMuted
+                ui.button[ui.bpx.4] = colorVoxMuted
+            end
+        end
+        // Talk active
+        if channel.talk[singleChannel] >= channel.talk.on
+            ui.button[ui.bpx.1] = colorTalk
+            ui.button[ui.bpx.2] = colorTalk
+            ui.button[ui.bpx.3] = colorTalk
+            ui.button[ui.bpx.4] = colorTalk
+        end
+        // Call active
+        if channel.input.call[singleChannel] == channel.input.call.active | channel.call[singleChannel] == channel.call.on
+            ui.button[ui.bpx.1] = colorCall
+            ui.button[ui.bpx.2] = colorCall
+            ui.button[ui.bpx.3] = colorCall
+            ui.button[ui.bpx.4] = colorCall
+        end
+        // Alert call
+        if channel.input.call[singleChannel] == channel.input.call.alert | channel.call[singleChannel] == channel.call.alert
+            ui.button[ui.bpx.1] = colorCallAlert
+            ui.button[ui.bpx.2] = colorCallAlert
+            ui.button[ui.bpx.3] = colorCallAlert
+            ui.button[ui.bpx.4] = colorCallAlert
+        end
+    // If we don't encounter a wanted state, we release the button state colors
+    else
+        ui.button[ui.bpx.1] = -1
+        ui.button[ui.bpx.2] = -1
+        ui.button[ui.bpx.3] = -1
+        ui.button[ui.bpx.4] = -1
+    end
+end
+
+// Function for talk buttons (expects the button ID as argument)
+function buttonTalk(index)
+    // Execute if button is pressed
+    if ui.button[index] == ui.button.pressed
+        // Execute if talkmode is NOT disabled
+        if channel.talkmode[singleChannel] != channel.talkmode.disabled
+            // Logic for talkmode "Latch" and "Latch/Mom"
+            if channel.talkmode[singleChannel] >= channel.talkmode.latch
+                // Execute if talk is deactivated
+                if channel.talk[singleChannel] == channel.talk.off
+                    // Set talk to PTT and set latched
+                    channel.talk[singleChannel] = channel.talk.ptt
+                    latchedTalk = 1
+                    // Execute if talkmode is "Latch/Mom"
+                    if channel.talkmode[singleChannel] == channel.talkmode.mom
+                        // Deactivate latched if timer runs out
+                        timer[index] = 250
+                        event timer[index]
+                            latchedTalk = 0
+                        end
+                    end
+                end
+                // Disable talk if it's currently latched
+                if channel.talk[singleChannel] == channel.talk.latch
+                    channel.talk[singleChannel] = channel.talk.off
+                    latchedTalk = 0
+                end
+            // Use PTT if talkmode is not at least "Latch"
+            else
+                channel.talk[singleChannel] = channel.talk.ptt
+                latchedTalk = 0
+            end
+        end
+        // Emulate button-combination for channel level (channel talk + encoder scroll)
+        event ui.encoder[ui.bpx.encoder.left]
+            channel.level[singleChannel] = channel.level[singleChannel] + ui.event.value
+        end
+        event ui.encoder[ui.bpx.encoder.right]
+            channel.level[singleChannel] = channel.level[singleChannel] + ui.event.value
+        end
+    // Execute if button is released
+    else
+        // Check for PTT
+        if channel.talk[singleChannel] == channel.talk.ptt & latchedTalk == 0
+            channel.talk[singleChannel] = channel.talk.off
+        end
+        // Check for latched
+        if channel.talk[singleChannel] == channel.talk.ptt & latchedTalk == 1
+            channel.talk[singleChannel] = channel.talk.latch
+            cancel timer[index]
+        end
+        // Release encoders after button press
+        cancel ui.encoder[ui.bpx.encoder.left]
+        cancel ui.encoder[ui.bpx.encoder.right]
+    end
+end
+
+// Function for call buttons (expects the button ID as argument)
+function buttonCall(index)
+    // Execute if button is pressed
+    if ui.button[index] == ui.button.pressed
+        channel.call[singleChannel] = channel.call.on
+        timer[1] = 2500
+        event timer[1]
+            channel.call[singleChannel] = channel.call.alert
+        end
+    else
+        channel.call[singleChannel] = channel.call.off
+        cancel timer[1]
+    end
+end
+
+// Mount the screen refresh event to call/refresh script's logic
+event ui.draw[0]
+    // Only execute script if second channel is empty AND the ui.mode is configured to "device.bpx.ui.mode.2chan"
+    if (channel.assign[2] == 0) & device.bpx.ui.mode == device.bpx.ui.mode.2chan
+        // Call function for 1ch UI
+        oneChannelUi()
+        // Call function for state indicators
+        stateColors()
+        // Mount buttons (We leave out "ui.bpx.1" as a hack to keep access to the listen mute key-combination (button + encoder click))
+        event ui.button[ui.bpx.2]
+            buttonTalk(ui.bpx.2)
+        end
+        event ui.button[ui.bpx.3]
+            if channel.callmode[singleChannel] == channel.callmode.disabled
+                buttonTalk(ui.bpx.3)
+            else
+                buttonCall(ui.bpx.3)
+            end
+        end
+        event ui.button[ui.bpx.4]
+            if channel.callmode[singleChannel] == channel.callmode.disabled
+                buttonTalk(ui.bpx.4)
+            else
+                buttonCall(ui.bpx.4)
+            end
+        end
+    // Release all buttons if conditions for executing the script are not met
+    else
+        cancel ui.button[ui.bpx.2]
+        cancel ui.button[ui.bpx.3]
+        cancel ui.button[ui.bpx.4]
+    end
+end
+
+// Timers for "call alert" state
+timer[6] = 1
+event timer[6]
+    colorCallAlert = colorCall
+    timer[7] = 333
+end
+event timer[7]
+    colorCallAlert = ui.color.white
+    timer[6] = 333
+end
+timer[8] = 1
+event timer[8]
+    colorVoxMuted = colorVox
+    timer[9] = 1000
+end
+event timer[9]
+    colorVoxMuted = colorDefault
+    timer[8] = 1000
+end    

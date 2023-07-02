@@ -1,0 +1,54 @@
+// Define button ID for toggle function (MCX*: 1-18, WPX: 1-3)
+define pgaToggleBtn 1
+// Define the button name for the toggle function
+var pgaToggleName = "PA Mute"
+// Define the channel ID used to send the PGA input (4W interface port user)
+define pgaToggleCh 1
+// Define the script index (remember to change it in the slave script as well)
+define scriptIndex 99
+// Initialize global variable to track the toggle state
+var pgaToggleActive = 0
+// Function to activate the PGA mute toggle
+function toggleActive()
+    // Set toggle state to active
+    pgaToggleActive = 1
+    // Send script2script using the defined index
+    control.destination(scriptIndex)
+    // Send defined channel ID and current state
+    control.write(1,pgaToggleCh)
+    control.write(2,pgaToggleActive)
+end
+// Function for deactivating the PGA mute toggle
+function toggleInactive()
+    // Set toggle state to inactive
+    pgaToggleActive = 0
+    // Send script2script using the defined index
+    control.destination(scriptIndex)
+    // Send defined channel ID and current state
+    control.write(1,pgaToggleCh)
+    control.write(2,pgaToggleActive)
+end
+// Execute functions on button press
+event ui.button[pgaToggleBtn]
+    if ui.event
+        if pgaToggleActive /* Comment out this line if function should act as PTT button */
+            toggleActive()
+        else
+            toggleInactive()
+        end /* Comment out this line if function should act as PTT button */
+    end
+end
+// Execute functions on touchscreen press
+event ui.touch[pgaToggleBtn]
+    if ui.event
+        toggleActive()
+    else
+        toggleInactive()
+    end
+end
+// Override visuals for function button
+event ui.draw[pgaToggleBtn]
+    ui.clear()
+    ui.draw.button(pgaToggleName,ui.color.red,pgaToggleActive ? 1 : 0)
+    ui.button[pgaToggleBtn] = pgaToggleActive ? ui.color.red : ui.color.blue
+end

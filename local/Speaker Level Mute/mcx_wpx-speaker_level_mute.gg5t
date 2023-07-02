@@ -1,0 +1,44 @@
+// Created by Charles Phelps
+// chose which field you want this button on
+define field 1
+// used for loging states; "last" is a return volume level and "toggle" is mute/unmute state
+var last = 0
+var toggle = 0
+// mutes audio when called
+function mute()
+    last = audio.speaker.level
+    audio.speaker.level = audio.level.mute
+    toggle = 1 
+end
+// unmutes audio when called
+function unmute()
+    audio.speaker.level = last
+    toggle = 0
+end
+// draws "Speaker Mute" which changes colour on "toggle"
+event ui.draw[field]
+    ui.clear()
+    ui.fontmode = ui.fontmode.center
+    ui.color = toggle == 0 ? ui.color.green : ui.color.red
+    ui.draw.text("Speaker Mute")
+end
+// button event listener
+event ui.button[field]
+    if ui.button[field] == ui.button.released
+        if toggle == 0
+            mute()
+        else
+            unmute()
+        end
+    end
+end
+// touch event listener
+event ui.touch[field]
+    if ui.event == ui.event.release
+        if toggle == 0
+            mute()
+        else
+            unmute()
+        end
+    end
+end

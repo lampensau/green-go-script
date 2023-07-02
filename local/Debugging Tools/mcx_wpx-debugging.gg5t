@@ -1,0 +1,44 @@
+// Created by Charles Phelps
+define row 20
+define col1 20
+define col2 120
+define col3 220
+define chan 1
+
+event ui.draw[0]
+    ui.clear()
+    ui.font = 6
+
+    ui.draw.text.at(col1,row*1,"assign:",channel.assign[chan])
+    ui.draw.text.at(col1,row*2,"call:",channel.call[chan])
+    ui.draw.text.at(col1,row*3,"callmode:",channel.callmode[chan])
+    ui.draw.text.at(col1,row*4,"chanmode:",channel.channelmode[chan])
+    ui.draw.text.at(col1,row*5,"cuemode:",channel.cue[chan])
+    ui.draw.text.at(col1,row*6,"cuemode:",channel.cuemode[chan])
+    ui.draw.text.at(col1,row*7,"gpio:", channel.gpiocontrol[chan])
+    ui.draw.text.at(col1,row*8,"in call:",channel.input.call[chan])
+    ui.draw.text.at(col1,row*9,"in cue:",channel.input.cue[chan])
+    ui.draw.text.at(col1,row*10,"in gpio:",channel.input.gpio[chan])
+
+    ui.draw.text.at(col2,row*1,"in satus:",channel.input.status[chan])
+    ui.draw.text.at(col2,row*2,"in talk:",channel.input.talk[chan])
+    ui.draw.text.at(col2,row*3,"level:",channel.level[chan])
+    ui.draw.text.at(col2,row*4,"listen:",channel.listen[chan])
+    ui.draw.text.at(col2,row*5,"listmode:",channel.listenmode[chan])
+    ui.draw.text.at(col2,row*6,"output:",channel.output[chan])
+    ui.draw.text.at(col2,row*7,"override:",channel.override[chan])
+    ui.draw.text.at(col2,row*8,"priority:",channel.priority[chan])
+    ui.draw.text.at(col2,row*9,"talk:",channel.talk[chan])
+    ui.draw.text.at(col2,row*10,"talkmode:",channel.talkmode[chan])
+
+    ui.draw.text.at(col3,row*1,":")
+    ui.draw.text.at(col3,row*2,":")
+    ui.draw.text.at(col3,row*3,":")
+    ui.draw.text.at(col3,row*4,":")
+    ui.draw.text.at(col3,row*5,":")
+    ui.draw.text.at(col3,row*6,":")
+    ui.draw.text.at(col3,row*7,":")
+    ui.draw.text.at(col3,row*8,":")
+    ui.draw.text.at(col3,row*9,":")
+    ui.draw.text.at(col3,row*10,":")
+end

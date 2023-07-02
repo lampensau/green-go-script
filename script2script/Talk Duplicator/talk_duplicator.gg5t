@@ -1,0 +1,23 @@
+// A for loop iterating the keyword 'chId' from '1' to '32'
+for chId = 1 to 32
+    // Create event channel.talk for each iteration of 'chId'
+    event channel.talk[chId]
+        // Use the current value of 'chId' by referencing it as 'event.index'
+        control.destination(event.index)
+        control.write(event.index)
+        if channel.talk[event.index] == channel.talk.on
+            control.write(channel.talk.on)
+        else
+            control.write(channel.talk.off)
+        end
+    end
+end
+
+// A for loop iterating the keyword 'source' from '1' to '32'
+for source = 1 to 32
+    // Create event control.receive for each iteration of 'chId'
+    event control.receive[source]
+        local channel = control.read()
+        channel.talk[channel] = control.read()
+    end
+end

@@ -1,0 +1,51 @@
+// ----- Configuration for the profile switcher function
+// MCX/MCXD button page
+define profileBtnPage device.page.2
+// Button IDs
+define profileBtn_1 13
+define profileBtn_2 14
+define profileBtn_3 15
+// User IDs
+define profileUsr_1 85
+define profileUsr_2 86
+define profileUsr_3 87
+// Button names
+var profileName_1 = "Show A"
+var profileName_2 = "Show B"
+var profileName_3 = "Show C"
+
+// ----- Function logic
+var activeBtn = 0
+function profileBtn(btn,usr,name)
+    if device.current.page == profileBtnPage
+        event ui.touch[btn]
+            activeBtn = ui.event ? 1 : 0
+            settings.user.id = settings.user.id != usr ? usr : ""
+        end
+        event ui.button[btn]
+            activeBtn = ui.event ? 1 : 0
+            settings.user.id = settings.user.id != usr ? usr : ""
+        end
+        event ui.draw[btn]
+            ui.clear(ui.color.black)
+            ui.draw.button(name, ui.color.purple, settings.user.id == usr | activeBtn ? 1 : 0)
+            ui.button[btn] = settings.user.id == usr | activeBtn ? ui.color.purple : ui.color.blue
+        end
+    else
+        cancel ui.touch[btn]
+        cancel ui.button[btn]
+        cancel ui.draw[btn]
+    end
+end
+
+// ----- Execute functions
+// Execute on page change
+event device.current.page
+    profileBtn(profileBtn_1,profileUsr_1,profileName_1)
+    profileBtn(profileBtn_2,profileUsr_2,profileName_2)
+    profileBtn(profileBtn_3,profileUsr_3,profileName_3)
+end
+// Execute on initial script load
+profileBtn(profileBtn_1,profileUsr_1,profileName_1)
+profileBtn(profileBtn_2,profileUsr_2,profileName_2)
+profileBtn(profileBtn_3,profileUsr_3,profileName_3)

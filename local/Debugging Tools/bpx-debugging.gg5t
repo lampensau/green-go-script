@@ -1,0 +1,23 @@
+// Created by Charles Phelps
+define row 1
+define col1 1
+define col2 49
+define step 11
+define chan 1
+
+event ui.draw[0]
+    ui.clear()
+    ui.font = 5
+
+    ui.draw.text.at(col1,row,"talk:",channel.talk[chan])
+    ui.draw.text.at(col1,row+step,"call:",channel.call[chan])
+    ui.draw.text.at(col1,row+(step*4),"cue:",channel.cue[chan])
+    ui.draw.text.at(col1,row+(step*2),"cam:",channel.callmode[chan])
+    ui.draw.text.at(col1,row+(step*3),"chm:",channel.channelmode[chan])
+
+    ui.draw.text.at(col2,row,"list:",channel.listen[chan])
+    ui.draw.text.at(col2,row+step,"lvl:",channel.level[chan])
+    ui.draw.text.at(col2,row+(step*4),"pgm:",special.program.level) 
+    ui.draw.text.at(col2,row+(step*3),"side:",audio.sidetone.level)
+    ui.draw.text.at(col2,row+(step*2),"iso:",settings.isolate)
+end

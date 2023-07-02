@@ -1,0 +1,35 @@
+// OSC port the device uses for OSC communications
+define portOSC 17001
+// Paths for studio 1
+var pathStudio1 = "/studio/1/onair"
+
+// Function to send communication via 'script to script' communication to other Green-GO devices
+function sendScript2Script(index,color)
+    control.destination(index)
+    control.write(1,color)
+end
+
+// Open UDP port and start listening for packets
+osc.open(portOSC)
+
+// Event executing when receiving OSC packet for 'pathOSC'
+event osc.receive[pathStudio1]
+    // Execute if OSC packet is '0' (integer)
+    if osc.read(1) == ui.color.black
+        ui.button[1] = ui.color.black
+        // Calling function 'sendScript2Script' signal to other Green-GO devices
+        sendScript2Script(98,ui.color.black)
+    else
+        ui.button[1] = osc.read(1)
+        // Calling function 'sendScript2Script' signal to other Green-GO devices
+        sendScript2Script(98,osc.read(1))
+    end
+end
+
+event control.receive[98]
+    if control.read(1) == ui.color.black
+        ui.button[1] = ui.color.black
+    else
+        ui.button[1] = control.read(1)
+    end
+end

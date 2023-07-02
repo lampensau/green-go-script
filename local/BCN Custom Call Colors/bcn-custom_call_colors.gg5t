@@ -1,0 +1,19 @@
+// Created by Charles Phelps
+define ChanA_assign 1
+define ChanB_assign 2
+define ChanC_assign 3
+
+define ChanA_colour ui.color.blue
+define ChanB_colour ui.color.green
+define ChanC_colour ui.color.white
+
+define idle_colour ui.color.black
+event channel.input.call[ChanA_assign]
+    ui.button[1] = channel.input.call[ChanA_assign] ? ChanA_colour : idle_colour
+end
+event channel.input.call[ChanB_assign]
+    ui.button[1] = channel.input.call[ChanB_assign] ? ChanB_colour : idle_colour
+end
+event channel.input.call[ChanC_assign]
+    ui.button[1] = channel.input.call[ChanC_assign] ? ChanC_colour : idle_colour
+end

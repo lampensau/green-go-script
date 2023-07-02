@@ -1,0 +1,51 @@
+// By Henk-Jan Blok
+define control_ID 1
+define ch_ID 1
+define mute_button 10
+
+var listen_state = 0
+
+// toggle mode
+/*
+event ui.button[mute_button]
+    if ui.button[mute_button] == ui.button.pressed
+        listen_state = listen_state ? 0 : 1
+        control.destination(control_ID)
+        control.write(listen_state)
+    end
+end
+*/
+
+// momentary mode
+event ui.button[mute_button]
+    if ui.button[mute_button] == ui.button.pressed
+        listen_state = channel.listen.off
+    end
+
+    if ui.button[mute_button] == ui.button.released
+        listen_state = channel.listen.on
+    end
+    
+    control.destination(control_ID)
+    control.write(1, ch_ID)
+    control.write(2, listen_state)
+end
+
+event ui.draw[mute_button]
+    ui.clear()
+    if mute 
+        ui.draw.button("MUTED", ui.color.blue ,  1)
+    else
+        ui.draw.button("unmuted", ui.color.blue ,  0)
+    end
+end
+    
+
+event control.receive[control_ID]
+    var state = control.read(2)
+    if ch_ID = control.read(1)
+        if listen_state != state
+            listen_state = state
+        end
+    end
+end

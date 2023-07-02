@@ -1,0 +1,189 @@
+// Created by Charles Phelps
+// NOTE: four channel mode, latch on short press, call on long press of active channel
+
+// set timer length and set device UI to 4channel mode
+var time = 1000
+var timeout1 = 0
+var timeout2 = 0
+var timeout3 = 0
+var timeout4 = 0
+device.bpx.ui.mode = device.bpx.ui.mode.4chan
+
+// button 1
+// listen to button
+event ui.button[ui.bpx.1]  
+    // start timeout
+    timer[6] = time
+    event timer[6]
+        timeout1 = 1
+    end
+    // if channel is latched start call alert after delay
+    if channel.talk[1] == channel.talk.latch
+        timer[1] = time
+        event timer[1]
+            channel.call[1] = channel.call.alert
+            cancel timer[6]
+        end
+    end 
+    // if button pressed and ether eoncoder turned cange channel volume
+    if  ui.button[ui.bpx.1] == ui.button.pressed
+        event ui.encoder[ui.bpx.encoder.left]
+            channel.level[1] = channel.level[1] + ui.event.value
+            cancel timer[1]
+        end
+        event ui.encoder[ui.bpx.encoder.right]
+            channel.level[1] = channel.level[1] + ui.event.value
+            cancel timer[1]
+        end
+    end
+    // if button released...
+    if ui.button[ui.bpx.1] == ui.button.released
+        cancel timer[6]
+        // if timeout not reached toggle channel latch/off, reset timers and default encoder function
+        if timeout1 == 0
+            if channel.talk[1] == channel.talk.off 
+                channel.talk[1] = channel.talk.latch
+            else
+                if channel.call[1] == channel.call.off
+                    channel.talk[1] = channel.talk.off
+                end
+            end
+            cancel timer[1]
+            cancel ui.encoder[ui.bpx.encoder.left]
+            cancel ui.encoder[ui.bpx.encoder.right]
+            channel.call[1] = channel.call.off
+        end
+    else
+        // if timeout reached do nothing
+        timeout1 = 0
+    end
+end
+
+// button 2
+event ui.button[ui.bpx.2]  
+    timer[7] = time
+    event timer[7]
+        timeout2 = 1
+    end
+    if channel.talk[2] == channel.talk.latch
+        timer[2] = time
+        event timer[2]
+            channel.call[2] = channel.call.alert
+            cancel timer[7]
+        end
+    end 
+    if  ui.button[ui.bpx.2] == ui.button.pressed
+        event ui.encoder[ui.bpx.encoder.left]
+            channel.level[2] = channel.level[2] + ui.event.value
+            cancel timer[2]
+        end
+        event ui.encoder[ui.bpx.encoder.right]
+            channel.level[2] = channel.level[2] + ui.event.value
+            cancel timer[2]
+        end
+    end
+    if ui.button[ui.bpx.2] == ui.button.released
+        cancel timer[7]
+        if timeout2 == 0
+            if channel.talk[2] == channel.talk.off 
+                channel.talk[2] = channel.talk.latch
+            else
+                if channel.call[2] == channel.call.off
+                    channel.talk[2] = channel.talk.off
+                end
+            end
+            cancel timer[2]
+            cancel ui.encoder[ui.bpx.encoder.left]
+            cancel ui.encoder[ui.bpx.encoder.right]
+            channel.call[2] = channel.call.off
+        end
+    else
+        timeout2 = 0
+    end
+end
+
+// button 3
+event ui.button[ui.bpx.3]  
+    timer[8] = time
+    event timer[8]
+        timeout3 = 1
+    end
+    if channel.talk[3] == channel.talk.latch
+        timer[3] = time
+        event timer[3]
+            channel.call[3] = channel.call.alert
+            cancel timer[8]
+        end
+    end 
+    if  ui.button[ui.bpx.3] == ui.button.pressed
+        event ui.encoder[ui.bpx.encoder.left]
+            channel.level[3] = channel.level[3] + ui.event.value
+            cancel timer[3]
+        end
+        event ui.encoder[ui.bpx.encoder.right]
+            channel.level[3] = channel.level[3] + ui.event.value
+            cancel timer[3]
+        end
+    end
+    if ui.button[ui.bpx.3] == ui.button.released
+        cancel timer[8]
+        if timeout3 == 0
+            if channel.talk[3] == channel.talk.off 
+                channel.talk[3] = channel.talk.latch
+            else
+                if channel.call[3] == channel.call.off
+                    channel.talk[3] = channel.talk.off
+                end
+            end
+            cancel timer[3]
+            cancel ui.encoder[ui.bpx.encoder.left]
+            cancel ui.encoder[ui.bpx.encoder.right]
+            channel.call[3] = channel.call.off
+        end
+    else
+        timeout3 = 0
+    end
+end
+
+// button 4
+event ui.button[ui.bpx.4]  
+    timer[9] = time
+    event timer[9]
+        timeout4 = 1
+    end
+    if channel.talk[4] == channel.talk.latch
+        timer[4] = time
+        event timer[4]
+            channel.call[4] = channel.call.alert
+            cancel timer[9]
+        end
+    end 
+    if  ui.button[ui.bpx.4] == ui.button.pressed
+        event ui.encoder[ui.bpx.encoder.left]
+            channel.level[4] = channel.level[4] + ui.event.value
+            cancel timer[4]
+        end
+        event ui.encoder[ui.bpx.encoder.right]
+            channel.level[4] = channel.level[4] + ui.event.value
+            cancel timer[4]
+        end
+    end
+    if ui.button[ui.bpx.4] == ui.button.released
+        cancel timer[9]
+        if timeout4 == 0
+            if channel.talk[4] == channel.talk.off 
+                    channel.talk[4] = channel.talk.latch
+            else
+                if channel.call[4] == channel.call.off
+                    channel.talk[4] = channel.talk.off
+                end
+            end
+            cancel timer[4]
+            cancel ui.encoder[ui.bpx.encoder.left]
+            cancel ui.encoder[ui.bpx.encoder.right]
+            channel.call[4] = channel.call.off
+        end
+    else
+        timeout4 = 0
+    end
+end

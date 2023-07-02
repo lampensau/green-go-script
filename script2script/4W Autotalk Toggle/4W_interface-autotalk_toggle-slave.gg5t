@@ -1,0 +1,15 @@
+// Define the index for script2script communication
+define scriptIndex 99
+// Initialize global variables to track the toggle state and channel
+var pgaToggleActive = 0
+var pgaToggleCh = 0
+// React when receiving a signal on the defined index
+event control.receive[scriptIndex]
+    // Set global variables to received keys
+    pgaToggleCh = control.read(1)
+    pgaToggleActive = control.read(2)
+    // Configure the "pgaToggleCh" depending on "pgaToggleActive"
+    channel.channelmode[pgaToggleCh] = pgaToggleActive ? channel.channelmode.normal : channel.channelmode.autotalk
+    channel.talkmode[pgaToggleCh] = pgaToggleActive ? channel.talkmode.disabled : channel.talkmode.mom
+    channel.talk[pgaToggleCh] = pgaToggleActive ? channel.talk.off : channel.talk.auto
+end
