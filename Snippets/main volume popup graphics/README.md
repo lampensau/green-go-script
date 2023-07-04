@@ -1,3 +1,3 @@
-# Main volumbe popup graphics
+# Main volume popup graphics
 
 - **Created by:** Charles Phelps
