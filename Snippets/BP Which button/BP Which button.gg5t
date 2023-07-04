@@ -1,0 +1,8 @@
+    var butt = 0
+    event ui.draw
+        butt = ui.button[ui.bpx.1] == ui.button.pressed ? 1 : ui.button[ui.bpx.2] == ui.button.pressed ? 2 : ui.button[ui.bpx.3] == ui.button.pressed ? 3 : ui.button[ui.bpx.4] == ui.button.pressed ? 4 : 0
+        ui.clear()
+        ui.fontmode = ui.fontmode.center
+        ui.draw.text(butt)
+    end
+//04/07/23 Chad.P BPX 5.0.4.5846

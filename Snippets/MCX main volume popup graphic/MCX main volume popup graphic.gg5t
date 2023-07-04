@@ -6,7 +6,7 @@
         ui.draw.rectangle(31,31,248,148)
         ui.color = ui.color.white
         ui.font = 14
-        ui.draw.text.at(80,60,"Main ",audio.main.level,"dB")
+        ui.draw.text.at(80,60,"Main ",audio.main.level)
         ui.draw.level(100,120,audio.main.level)
     end
 //04/07/23 Chad.P BPX 5.0.4.5846
