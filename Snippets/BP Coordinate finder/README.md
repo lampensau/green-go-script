@@ -4,3 +4,5 @@
 
 Displays X (left encoder control) & Y (Right encoder control) values
 
+Pressing button 1 will set the datum for a rectangle, pressing button 4 will complete the rectangle at which point the button of the screen should display these values [X, Y, W, H]
+

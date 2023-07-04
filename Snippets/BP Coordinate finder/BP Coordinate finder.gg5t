@@ -13,7 +13,6 @@
             x = 0
         end
     end
-
     event ui.encoder[ui.bpx.encoder.right]
         y = y - ui.event.value
         if y >= 63
@@ -42,10 +41,11 @@
         ui.color = ui.color.white
         ui.draw.text.at(10,0,"X=",x)
         ui.draw.text.at(60,0,"Y=",y)
-        ui.draw.rectangle(x,y,1,1)
+        ui.draw.rectangle(x,y,1,5)
+        ui.draw.rectangle(x,y,5,1)
         ui.draw.open.rectangle(a1,a2,a3,a4)
         if a4 != 0
-            ui.draw.text.at(20,50,a1,"-",a2,"-",a3,"-",a4)
+            ui.draw.text.at(20,50,a1,",",a2,",",a3,",",a4)
         end
     end
 //04/07/23 Chad.P BPX 5.0.4.5846
