@@ -1,0 +1,51 @@
+    var x = 20
+    var y = 20
+    var a1 = 0
+    var a2 = 0
+    var a3 = 0
+    var a4 = 0
+    event ui.encoder[ui.bpx.encoder.left]
+        x = x + ui.event.value
+        if x >= 95
+            x = 95
+        end
+        if x <= 0
+            x = 0
+        end
+    end
+
+    event ui.encoder[ui.bpx.encoder.right]
+        y = y - ui.event.value
+        if y >= 63
+            y = 63
+        end
+        if y <= 0
+            y = 0
+        end
+    end
+    event ui.button[ui.bpx.1]
+        if ui.button[ui.bpx.1] == ui.button.pressed
+            a1 = x
+            a2 = y 
+        end
+    end
+    event ui.button[ui.bpx.4]
+        if ui.button[ui.bpx.4] == ui.button.pressed
+            a3 = x - a1
+            a4 = y - a2
+        end
+    end
+    event ui.draw
+        ui.color = ui.color.black
+        ui.draw.rectangle(10,2,28,10)
+        ui.draw.rectangle(60,2,28,10)
+        ui.color = ui.color.white
+        ui.draw.text.at(10,0,"X=",x)
+        ui.draw.text.at(60,0,"Y=",y)
+        ui.draw.rectangle(x,y,1,1)
+        ui.draw.open.rectangle(a1,a2,a3,a4)
+        if a4 != 0
+            ui.draw.text.at(20,50,a1,"-",a2,"-",a3,"-",a4)
+        end
+    end
+//04/07/23 Chad.P BPX 5.0.4.5846
