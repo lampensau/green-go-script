@@ -1,24 +1,14 @@
     var pop = 0
     event ui.draw
-        for chan = 1 to 32
+        for chan = 5 to 32
             pop = channel.input.status[chan] == 3 ? chan : ""
         end
         if channel.input.status[pop] != 1
-            if pop != 0
-                if pop != 1
-                    if pop != 2
-                        if pop != 3
-                            if pop != 4
-                                ui.color = ui.color.black
-                                ui.draw.rectangle (-1,25,100,15)
-                                ui.color = ui.color.white
-                                ui.draw.open.rectangle (-1,25,100,15)
-                                ui.fontmode = ui.fontmode.center
-                                ui.draw.text("@",pop)
-                            end
-                        end
-                    end
-                end
-            end
+            ui.color = ui.color.black
+            ui.draw.rectangle (-1,25,100,15)
+            ui.color = ui.color.white           
+            ui.draw.open.rectangle (-1,25,100,15)
+            ui.fontmode = ui.fontmode.center
+            ui.draw.text("@",pop)
         end
     end
